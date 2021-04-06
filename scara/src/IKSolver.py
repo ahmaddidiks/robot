@@ -1,7 +1,7 @@
 import rospy
 import math
 import numpy as np
-from std_msgs.msg import UInt16
+#from std_msgs.msg import UInt16
 from scara.msg import stepperPostList
 
 #length in mm
