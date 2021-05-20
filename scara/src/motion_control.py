@@ -1,6 +1,8 @@
+#!/usr/bin/env python
+
 import rospy
 import math
-import numpy as np
+#import numpy as np
 from scara.msg import IK_Target
 
 rospy.init_node('scara_motion_control_node', IK_Target, queue_size = 10)

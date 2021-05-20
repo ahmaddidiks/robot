@@ -21,4 +21,5 @@ void setup(){
 
 void loop(){
     Serial.println("Encoder count = "+String((int32_t)encoder.getCount())+" "+String((int32_t)encoder1.getCount())+" "+String((int32_t)encoder2.getCount())+" "+String((int32_t)encoder3.getCount())+" "+String((int32_t)encoder4.getCount()));
+    
 }

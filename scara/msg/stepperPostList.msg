@@ -1,1 +1,1 @@
-stepperPos[] stepper
+float64[] stepperPos
