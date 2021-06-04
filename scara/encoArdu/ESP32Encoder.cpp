@@ -3,9 +3,12 @@
  *
  *  Created on: Oct 15, 2018
  *      Author: hephaestus
+ * 
+ *	Edited on: June 4, 2021
+	Edited By: Ahmad Didik Setiyadi
  */
 
-#include <ESP32Encoder.h>
+#include "ESP32Encoder.h"
 
 //static ESP32Encoder *gpio2enc[48];
 //
@@ -205,12 +208,3 @@ int64_t ESP32Encoder::clearCount() {
 	count = 0;
 	return pcnt_counter_clear(unit);
 }
-
-int64_t ESP32Encoder::pauseCount() {
-	return pcnt_counter_pause(unit);
-}
-
-int64_t ESP32Encoder::resumeCount() {
-	return pcnt_counter_resume(unit);
-}
-

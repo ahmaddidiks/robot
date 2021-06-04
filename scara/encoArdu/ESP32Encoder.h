@@ -1,10 +1,25 @@
 #pragma once
 #include <Arduino.h>
-#include <driver/gpio.h>
+#include "driver/gpio.h"
 #include "driver/pcnt.h"
+
 #define MAX_ESP32_ENCODERS PCNT_UNIT_MAX
 #define 	_INT16_MAX 32766
 #define  	_INT16_MIN -32766
+
+#define PPR 2400
+
+#define GEAR_RATIO_0 8
+#define GEAR_RATIO_1 8
+#define GEAR_RATIO_2 8
+#define GEAR_RATIO_3 8
+#define GEAR_RATIO_4 8
+
+#define FACTOR_0 GEAR_RATIO_0*PPR
+#define FACTOR_1 GEAR_RATIO_1*PPR
+#define FACTOR_2 GEAR_RATIO_2*PPR
+#define FACTOR_3 GEAR_RATIO_3*PPR
+#define FACTOR_4 GEAR_RATIO_4*PPR
 
 enum encType {
 single,
@@ -16,6 +31,10 @@ UP,
 DOWN,
 NONE
 };
+
+void getDegree();
+void setEncoder(int value);
+
 class ESP32Encoder {
 private:
 	void attach(int aPintNumber, int bPinNumber, enum encType et);
@@ -28,6 +47,7 @@ private:
 
 	static bool attachedInterrupt;
 	int64_t getCountRaw();
+
 public:
 	ESP32Encoder();
 	~ESP32Encoder();
@@ -37,8 +57,6 @@ public:
 	//void attachHalfQuad(int aPintNumber, int bPinNumber);
 	int64_t getCount();
 	int64_t clearCount();
-	int64_t pauseCount();
-	int64_t resumeCount();
 
 	boolean isAttached(){return attached;}
 	void setCount(int64_t value);
@@ -55,4 +73,3 @@ public:
 
 //Added by Sloeber 
 #pragma once
-
