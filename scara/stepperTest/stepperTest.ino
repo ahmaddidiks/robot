@@ -1,6 +1,6 @@
 // defines pins numbers
-const int STEP[5] = {27, 33, 18, 19, 22};
-const int DIR[5]  = {14, 25, 5, 21, 23};
+const int STEP[5] = {25, 14, 19, 5, 22};
+const int DIR[5]  = {33, 27, 21, 18, 23};
 #define enable 10
 
  
