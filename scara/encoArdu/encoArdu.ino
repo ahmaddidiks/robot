@@ -1,10 +1,13 @@
+//#define USE_USBCON
+
 #include "ESP32Encoder.h"
+//#include <ArduinoHardware.h>
 
 #include <ros.h>
-#include <robot/encoder.h>
+#include <scara/encoder.h>
 
 ros::NodeHandle nh;
-robot::encoder encoder_msg;
+scara::encoder encoder_msg;
 ros::Publisher pub_enc("encoder", &encoder_msg);
 
 ESP32Encoder encoder0;
@@ -16,7 +19,7 @@ ESP32Encoder encoder4;
 float deg[5] = {0,0,0,0,0};
 
 void setup(){
-    Serial.begin(115200);
+//    Serial.begin(57600);
 
     ESP32Encoder::useInternalWeakPullResistors=UP;
     encoder0.attachFullQuad(13, 12); 
@@ -31,22 +34,21 @@ void setup(){
 
     nh.advertise(pub_enc);
 
-    encoder_msg.data = (float*)malloc(sizeof(float) * 5);
+    encoder_msg.encoderPostList = (float*)malloc(sizeof(float) * 5);
 
-    encoder_msg.data_length = 5;
+    encoder_msg.encoderPostList_length = 5;
 }
 
 void loop(){
 //    Serial.println("Encoder count 1 : "+String((int32_t)encoder0.getCount())+" 2 : "+String((int32_t)encoder1.getCount())+" 3 : "+String((int32_t)encoder2.getCount())+" 4 : "+String((int32_t)encoder3.getCount())+" 5: "+String((int32_t)encoder4.getCount()));
 getDegree();
-Serial.print("Degree count ");
 for (int i=0; i<5;i++){
-  encoder_msg.data[i] = deg[i];
-  if(i==4) Serial.println(String(i) + " : " +  String(deg[i]));
-  else Serial.print(String(i) + " : " +  String(deg[i]) + " ");
+  encoder_msg.encoderPostList[i] = deg[i];
+//  if(i==4) Serial.println(String(i) + " : " +  String(deg[i]));
+//  else Serial.print(String(i) + " : " +  String(deg[i]) + " ");
   }
   pub_enc.publish(&encoder_msg);
   nh.spinOnce();
-  delay(5);
+  delay(100);
     
 }
