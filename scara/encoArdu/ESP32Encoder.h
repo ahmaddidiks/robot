@@ -21,6 +21,7 @@
 #define FACTOR_3 GEAR_RATIO_3*PPR
 #define FACTOR_4 GEAR_RATIO_4*PPR
 
+
 enum encType {
 single,
 half,
@@ -32,7 +33,6 @@ DOWN,
 NONE
 };
 
-void getDegree();
 void setEncoder(int value);
 
 class ESP32Encoder {

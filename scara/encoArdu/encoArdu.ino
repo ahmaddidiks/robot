@@ -1,6 +1,11 @@
 #include "ESP32Encoder.h"
 
-float deg0,deg1,deg2,deg3,deg4;
+#include <ros.h>
+#include <robot/encoder.h>
+
+ros::NodeHandle nh;
+robot::encoder encoder_msg;
+ros::Publisher pub_enc("encoder", &encoder_msg);
 
 ESP32Encoder encoder0;
 ESP32Encoder encoder1;
@@ -8,20 +13,40 @@ ESP32Encoder encoder2;
 ESP32Encoder encoder3;
 ESP32Encoder encoder4;
 
+float deg[5] = {0,0,0,0,0};
+
 void setup(){
     Serial.begin(115200);
 
     ESP32Encoder::useInternalWeakPullResistors=UP;
-    encoder0.attachFullQuad(5, 18); 
-    encoder1.attachFullQuad(19, 21);
-    encoder2.attachFullQuad(13, 12);
-    encoder3.attachFullQuad(14, 27);
-    encoder4.attachFullQuad(26, 25);
+    encoder0.attachFullQuad(13, 12); 
+    encoder1.attachFullQuad(25, 14);
+    encoder2.attachFullQuad(32, 33);
+    encoder3.attachFullQuad(34, 35);
+    encoder4.attachFullQuad(5, 18);
 
     setEncoder(0);
+
+    nh.initNode();
+
+    nh.advertise(pub_enc);
+
+    encoder_msg.data = (float*)malloc(sizeof(float) * 5);
+
+    encoder_msg.data_length = 5;
 }
 
 void loop(){
-    Serial.println("Encoder count 1 : "+String((int32_t)encoder0.getCount())+" 2 : "+String((int32_t)encoder1.getCount())+" 3 : "+String((int32_t)encoder2.getCount())+" 4 : "+String((int32_t)encoder3.getCount())+" 5: "+String((int32_t)encoder4.getCount()));
-    getDegree();
+//    Serial.println("Encoder count 1 : "+String((int32_t)encoder0.getCount())+" 2 : "+String((int32_t)encoder1.getCount())+" 3 : "+String((int32_t)encoder2.getCount())+" 4 : "+String((int32_t)encoder3.getCount())+" 5: "+String((int32_t)encoder4.getCount()));
+getDegree();
+Serial.print("Degree count ");
+for (int i=0; i<5;i++){
+  encoder_msg.data[i] = deg[i];
+  if(i==4) Serial.println(String(i) + " : " +  String(deg[i]));
+  else Serial.print(String(i) + " : " +  String(deg[i]) + " ");
+  }
+  pub_enc.publish(&encoder_msg);
+  nh.spinOnce();
+  delay(5);
+    
 }

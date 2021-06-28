@@ -1,9 +1,9 @@
 void getDegree(){
-  deg0 = encoder0.getCount()/FACTOR_0;
-  deg1 = encoder1.getCount()/FACTOR_1;
-  deg2 = encoder2.getCount()/FACTOR_2;
-  deg3 = encoder3.getCount()/FACTOR_3;
-  deg4 = encoder4.getCount()/FACTOR_4;
+  deg[0] = encoder0.getCount()/FACTOR_0;
+  deg[1] = encoder1.getCount()/FACTOR_1;
+  deg[2] = encoder2.getCount()/FACTOR_2;
+  deg[3] = encoder3.getCount()/FACTOR_3;
+  deg[4] = encoder4.getCount()/FACTOR_4;
 }
 
 void setEncoder(int value){
