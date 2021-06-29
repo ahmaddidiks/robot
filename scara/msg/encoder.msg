@@ -1,1 +1,1 @@
-float64[] encoderPostList
+float32[] encoderPostList

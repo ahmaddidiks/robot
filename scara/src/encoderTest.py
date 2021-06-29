@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-coding test library encoder dan stepper
+coding test library encoder (hanya subcriber)
 '''
 
 import rospy

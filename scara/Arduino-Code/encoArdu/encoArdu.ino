@@ -1,4 +1,8 @@
+//#define USE_USBCON
+
 #include "ESP32Encoder.h"
+//#include <ArduinoHardware.h>
+
 #include <ros.h>
 #include <scara/encoder.h>
 

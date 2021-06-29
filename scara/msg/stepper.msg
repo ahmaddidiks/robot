@@ -1,1 +1,2 @@
-float64[] stepperPostList
+int32[] stepperPostList
+bool enableStepper
