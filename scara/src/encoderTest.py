@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 '''
 coding test library encoder (hanya subcriber)
@@ -14,6 +14,7 @@ from scara.msg import encoder
 
 def encoder_callback(data):
     a, b, c, d, e =  data.encoderPostList
+    a = a
     rospy.loginfo(a)
 
 if __name__ == '__main__':

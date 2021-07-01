@@ -19,10 +19,10 @@ void loop() {
   // Makes 200 pulses for making one full cycle rotation
   for(int x = 0; x < 2000; x++) {
     for(int i=0; i<5;i++) digitalWrite(STEP[i],HIGH); // Enables the motor to move in a particular direction
-    delayMicroseconds(400);
+    delayMicroseconds(500);
      
     for(int i=0; i<5;i++) digitalWrite(STEP[i],LOW); // Enables the motor to move in a particular direction
-    delayMicroseconds(400); 
+    delayMicroseconds(500); 
   }
   delay(1000); // One second delay
   
@@ -31,10 +31,10 @@ void loop() {
   // Makes 400 pulses for making two full cycle rotation
   for(int x = 0; x < 4000; x++) {
     for(int i=0; i<5;i++) digitalWrite(STEP[i],HIGH); // Enables the motor to move in a particular direction
-    delayMicroseconds(400);
+    delayMicroseconds(500);
      
     for(int i=0; i<5;i++) digitalWrite(STEP[i],LOW); // Enables the motor to move in a particular direction
-    delayMicroseconds(400); 
+    delayMicroseconds(500); 
   }
   delay(1000);
 }

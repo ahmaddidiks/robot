@@ -16,10 +16,10 @@ ESP32Encoder encoder2;
 ESP32Encoder encoder3;
 ESP32Encoder encoder4;
 
-float deg[5] = {0,0,0,0,0};
+float deg[5] = {0.00,0.00,0.00,0.00,0.00};
 
 void setup(){
-//    Serial.begin(57600);
+    Serial.begin(57600);
 
     ESP32Encoder::useInternalWeakPullResistors=UP;
     encoder0.attachFullQuad(13, 12); 
@@ -42,10 +42,11 @@ void setup(){
 void loop(){
 //    Serial.println("Encoder count 1 : "+String((int32_t)encoder0.getCount())+" 2 : "+String((int32_t)encoder1.getCount())+" 3 : "+String((int32_t)encoder2.getCount())+" 4 : "+String((int32_t)encoder3.getCount())+" 5: "+String((int32_t)encoder4.getCount()));
 getDegree();
+
 for (int i=0; i<5;i++){
   encoder_msg.encoderPostList[i] = deg[i];
-//  if(i==4) Serial.println(String(i) + " : " +  String(deg[i]));
-//  else Serial.print(String(i) + " : " +  String(deg[i]) + " ");
+  if(i==4) Serial.println(String(i) + " : " +  String(deg[i]));
+  else Serial.print(String(i) + " : " +  String(deg[i]) + " ");
   }
   pub_enc.publish(&encoder_msg);
   nh.spinOnce();
