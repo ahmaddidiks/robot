@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from math import sin, cos, acos, atan2, sqrt, radians, degrees
+from math import sin, cos, acos, atan2, sqrt, radians, degrees, atan
 '''
 OP3 ROBOT ID MAPING BASED
 tehta 1 ==> ID 9,10
@@ -11,6 +11,7 @@ tehta 6 ==> ID 7,8
 '''
 l1 = 152.26 #mm
 l2 = 149.23 #mm
+l3 = 30.00 #mm
 
 
 def ik2(x,y,z):
@@ -36,13 +37,17 @@ def ik2(x,y,z):
 
 # x,y,z coordinates in mm
 def ik(koordinatX, koordinatY,  koordinatZ):
-    x = koordinatX ## ==> y in robotics
-    y = koordinatZ ## ==> x in robotics
-    z = koordinatY
+    x = koordinatX ## ==> y in robotics ==> nilai selalu nol    x
+    y = koordinatZ ## ==> x in robotics ==> menjadi y           y
+    z = koordinatY ## ==> menjadi x                             z
     '''
     rotate y(x) axis -90deg ==> doesn't need x(y) coordinates (always 0) ==> theta 1
     '''
     try:
+        tetha1 = degrees(atan(y/z))
+        z = 0
+        y = y - l3
+        #
         A = (x**2 + y**2 + z**2 - l1**2 - l2**2) /(2*l1*l2)
         B = sqrt(1-(A**2))
         tetha3 = degrees(acos(A))
@@ -54,28 +59,24 @@ def ik(koordinatX, koordinatY,  koordinatZ):
         C = degrees(atan2(buff2,z))
         D = degrees(atan2(buff3,buff1))
         tetha2 = C - D
-        #tetha2 = atan2(C, D)
-        tetha5 = degrees(atan2(x,y))
-        tetha1 = tetha5
-        tetha4 = tetha3 + tetha2 - 90
         
-        return [tetha2, tetha3]
+        return [tetha1, tetha2, tetha3]
         #return [tetha1+180, 90+tetha2, tetha3+180, tetha4+180, tetha5+180] #[tetha2 + 90, tetha3+180
 
     except ValueError:
         return '[IK_Target] Value Error'
 def coba1():
     z=0
-    x,y = -100,250
-    a, b = ik(z,y,x)
-    print(a,b)
+    x,y = -200,251
+    c, a, b = ik(z,x,y)
+    print(c,a,b)
     b +=a
     hasil_y, hasil_x = l1*cos(radians(a)) + l2*cos(radians(b)) , l1*sin(radians(a)) + l2*sin(radians(b))
-    print(f"{l1+l2} -- x={x}, y={y} --jarak(abs) hasil x={hasil_x} hasil y={hasil_y}")
+    print(f"{l1+l2} -- x=0, y={y-l3} --jarak(abs) hasil x={hasil_x} hasil y={hasil_y}")
 
 def coba2():
     z=0
-    x,y = -100,250
+    x,y = 0,250
     a, b, c = ik2(x,y,z)
     print(a,b)
     b +=a
@@ -83,5 +84,4 @@ def coba2():
     print(f"{l1+l2} -- x={x}, y={y} --jarak(abs) hasil x={hasil_x} hasil y={hasil_y}")
 
 
-coba2()
-
+coba1()
