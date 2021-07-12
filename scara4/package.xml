@@ -1,10 +1,10 @@
 <package format="2">
-  <name>urdf_scara</name>
+  <name>scara4</name>
   <version>1.0.0</version>
   <description>
-    <p>URDF Description package for urdf_scara</p>
+    <p>URDF Description package for scara4</p>
     <p>This package contains configuration data, 3D models and launch files
-for urdf_scara robot</p>
+for scara4 robot</p>
   </description>
   <author>TODO</author>
   <maintainer email="TODO@email.com" />
