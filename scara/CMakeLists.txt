@@ -52,6 +52,7 @@ add_message_files(
   scaraGlobal.msg
   stepper.msg
   encoder.msg
+  link.msg
 )
 
 ## Generate services in the 'srv' folder
