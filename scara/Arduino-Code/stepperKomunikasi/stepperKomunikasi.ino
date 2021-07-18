@@ -3,7 +3,11 @@
 
 #define stepper_num 3
 #define vel 720
-#define ppr 200
+//#define ppr 200
+int  ppr[4] {800, 811, 1357, 200}
+// #define pprLink1 800
+// #define pprLink2 811
+// #define pprLink3 1357
 
 // defines pins numbers
 const int STEP[5] = {23, 21, 18, 27, 32};
@@ -24,7 +28,7 @@ void stepper_cb(const scara::stepper& stepper_msg){
   else digitalWrite(enable, LOW);
 
   for (int i=0; i < stepper_num; i++) {
-    _pulseCountTarget[i] = stepper_msg.stepperPostList[i] / 360 * ppr * 2;
+    _pulseCountTarget[i] = stepper_msg.stepperPostList[i] / 360 * ppr[i] * 2;
   }
 }
 
@@ -39,7 +43,7 @@ void setup(){
     pinMode(DIR[i], OUTPUT);
   }
   pinMode(enable, OUTPUT);
-  digitalWrite(enable, HIGH); //activate stepper
+  digitalWrite(enable, HIGH); //diactivate stepper
 }
 
 void loop(){

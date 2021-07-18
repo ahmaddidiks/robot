@@ -7,7 +7,6 @@
  *	Edited on: June 4, 2021
 	Edited By: Ahmad Didik Setiyadi
  */
-
 #include "ESP32Encoder.h"
 
 //static ESP32Encoder *gpio2enc[48];
@@ -155,11 +154,9 @@ void ESP32Encoder::attach(int a, int b, enum encType et) {
 		pcnt_unit_config(&r_enc_config);	
 	}
 
-
 	// Filter out bounces and noise
 	pcnt_set_filter_value(unit, 250);  // Filter Runt Pulses
 	pcnt_filter_enable(unit);
-
 
 	/* Enable events on  maximum and minimum limit values */
 	pcnt_event_enable(unit, PCNT_EVT_H_LIM);
@@ -178,12 +175,10 @@ void ESP32Encoder::attach(int a, int b, enum encType et) {
 	}
 	pcnt_intr_enable(unit);
 	pcnt_counter_resume(unit);
-
 }
 
 void ESP32Encoder::attachHalfQuad(int aPintNumber, int bPinNumber) {
 	attach(aPintNumber, bPinNumber, half);
-
 }
 void ESP32Encoder::attachSingleEdge(int aPintNumber, int bPinNumber) {
 	attach(aPintNumber, bPinNumber, single);

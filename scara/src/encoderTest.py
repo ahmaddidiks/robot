@@ -14,8 +14,7 @@ from scara.msg import encoder
 
 def encoder_callback(data):
     a, b, c, d, e =  data.encoderPostList
-    a = a
-    rospy.loginfo(a)
+    rospy.loginfo(f'{a}, {b}, {c}, {d}, {e}')
 
 if __name__ == '__main__':
     rospy.init_node("encoder_test")
