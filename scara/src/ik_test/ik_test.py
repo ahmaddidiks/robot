@@ -67,9 +67,9 @@ class MainWindows(QMainWindow):
             tetha2 = B - C
             z = z #nanti di kali gain / di konvert ke scala / derajat
             
-            data.stepperPostList[0] = tetha1
+            data.stepperPostList[0] = -tetha1
             data.stepperPostList[1] = tetha2
-            data.stepperPostList[2] = tetha3
+            data.stepperPostList[2] = -tetha3
             data.stepperPostList[3] = z*high
 
             self.tetha1_target_label.setText(str(tetha1))

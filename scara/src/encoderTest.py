@@ -13,8 +13,8 @@ from scara.msg import encoder
 #pub = rospy.Publisher("encoder", encoder, queue_size=10)
 
 def encoder_callback(data):
-    a, b, c, d, e =  data.encoderPostList
-    rospy.loginfo(f'{a}, {b}, {c}, {d}, {e}')
+    a, b, c, d =  data.encoderPostList
+    rospy.loginfo(f'{a}, {b}, {c}, {d}')
 
 if __name__ == '__main__':
     rospy.init_node("encoder_test")

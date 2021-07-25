@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<launch>
-    <param name="robot_description" command="cat '$(find urdf_test)/urdf/robot.urdf'" />
-    
-    <node name="urdf_test1" pkg="gazebo_ros" type="robot" output="screen"
-          args="-urdf -param robot_description -model m2wr" />
-          
-</launch>

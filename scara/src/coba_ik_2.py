@@ -2,9 +2,9 @@
 from math import sin, cos, acos, atan2, sqrt, radians, degrees
 from random import randrange
 
-l1 = 67.00 #mm
-l2 = 152.80 #mm
-l3 = 149.98 #mm
+l1 = 70.20 #mm
+l2 = 152.70 #mm
+l3 = 149.7 #mm
 
 # x,y,z coordinates in mm
 def ik(x,y,z):
@@ -45,6 +45,7 @@ def coba(x,y):
 
 
 for i in range(100):
-    coba(randrange(50, 200), randrange(-170, -50))
     print(f"ITERASI KE {i}")
+    coba(randrange(50, 200), randrange(-170, -50))
+    
 
