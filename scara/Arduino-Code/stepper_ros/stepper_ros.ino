@@ -3,9 +3,9 @@
 
 #define stepper_num 3
 //#define vel 180
-const int vel[4] {25, 25, 20, 180};
+const int vel[4] {25, 24, 20, 180};
 //#define ppr 360
-int  ppr[4] {720, 720, 1220, 200};
+int  ppr[4] {720, 730, 1220, 200};
 // #define pprLink1 800
 // #define pprLink2 811
 // #define pprLink3 1357
@@ -33,7 +33,7 @@ void stepper_cb(const scara::stepper& stepper_msg){
   }
 }
 
-ros::Subscriber<scara::stepper> sub("stepper_test_gui", stepper_cb);
+ros::Subscriber<scara::stepper> sub("invers_kinematics_gui", stepper_cb);
 
 void setup(){
   pinMode(2, OUTPUT);

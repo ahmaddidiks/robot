@@ -5,13 +5,17 @@ coding test invers kineamtiks dengan GUI
 '''
 
 from math import sin, cos, acos, atan2, sqrt, radians, degrees
+
 import rospy
 from rospy.timer import Rate
-from scara.msg import stepper, encoder
+from scara.msg import stepper, encoder, syncEncoder
 
 data = stepper()
 data.enableStepper = False
 data.stepperPostList = [0,0,0,0]
+
+enc = syncEncoder()
+enc.tetha = [0,0,0,0]
 
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
@@ -21,6 +25,7 @@ class MainWindows(QMainWindow):
     def __init__(self, parent= None):
         super(MainWindows, self).__init__(parent)
         loadUi('/home/didik/robot/src/scara/src/ik_test/gui.ui',self)
+        title = "Manipulator GUI"
         '''coordinat pos'''
         global x_pos, y_pos, z_pos
         x_pos, y_pos, z_pos = 0.0, 0.0, 0.0
@@ -30,18 +35,31 @@ class MainWindows(QMainWindow):
         self.y_target_box.textChanged.connect(self.y_target_changed)
         self.z_target_box.textChanged.connect(self.z_target_changed)
         self.run_ik_btn.clicked.connect(self.run_ik)
+        self.sync_encoder.clicked.connect(self.sync_encoder_handler)
+
+        '''subcribe from sensor data and show it in GUI'''
+        self.sub_sensor = rospy.Subscriber("encoder", encoder, self.encoder_callback)
 
     def x_target_changed(self, value):
         global x_pos
-        x_pos = float(value)
+        try:
+            x_pos = float(value)
+        except ValueError:
+            rospy.loginfo(f"{value} can't be float")
 
     def y_target_changed(self, value):
         global y_pos
-        y_pos = float(value)
+        try:
+            y_pos = float(value)
+        except ValueError:
+            rospy.loginfo(f"{value} can't be float")
 
     def z_target_changed(self, value):
         global z_pos
-        z_pos = float(value)
+        try:
+            z_pos = float(value)
+        except ValueError:
+            rospy.loginfo(f"{value} can't be float")
 
     def run_ik(self):
         x,y,z = x_pos, y_pos, z_pos
@@ -71,10 +89,12 @@ class MainWindows(QMainWindow):
             data.stepperPostList[1] = tetha2
             data.stepperPostList[2] = -tetha3
             data.stepperPostList[3] = z*high
+            tinggi = data.stepperPostList[3]
 
             self.tetha1_target_label.setText(str(tetha1))
             self.tetha2_target_label.setText(str(tetha2))
             self.tetha3_target_label.setText(str(tetha3))
+            self.tinggi_target_label.setText(str(tinggi))
             #return [tetha1, tetha2, tetha3, z]
             self.publish()
 
@@ -93,8 +113,29 @@ class MainWindows(QMainWindow):
     def publish(self):
         pub.publish(data)
 
+    def encoder_callback(self,data):
+        tetha1, tetha2, tetha3, tinggi = data.encoderPostList
+        tetha1 = -tetha1 * 90 /2400
+        tetha2 = -tetha2 * 88.76712328/2400
+        tetha3 = -tetha3 * 53.114754098/2400
+        self.tetha1_real_label.setText(str(tetha1))
+        self.tetha2_real_label.setText(str(tetha2))
+        self.tetha3_real_label.setText(str(tetha3))
+        self.tinggi_real_label.setText(str(tinggi))
+
+    def sync_encoder_handler(self, checked):
+        enc.tetha[0] = int(-data.stepperPostList[0] * 2400/90)
+        enc.tetha[1] = int(data.stepperPostList[1] * 2400/88.76712328)
+        enc.tetha[2] = int(-data.stepperPostList[0] * 2400/53.114754098)
+        enc.tetha[3] = int(-data.stepperPostList[0])
+        if checked:
+            enc_pub.publish(enc)
+
+
+
 rospy.init_node('invers_kinematics_gui')
 pub = rospy.Publisher('invers_kinematics_gui', stepper, queue_size=10)
+enc_pub = rospy.Publisher('sync_encoder',syncEncoder, queue_size=10)
 
 app = QApplication(sys.argv)
 window = MainWindows()

@@ -1,0 +1,11 @@
+<launch>
+  <node name="sensors" pkg="rosserial_python" type="serial_node.py" output="screen">
+  <param name="port" value="/dev/ttyUSB0"/>
+  <param name="baud" value="57600"/>
+  </node>
+  <node name="steppers" pkg="rosserial_python" type="serial_node.py" output="screen">
+  <param name="port" value="/dev/ttyUSB1"/>
+  <param name="baud" value="57600"/>
+  </node>
+  <node name="invers_kinematics" pkg="scara" type="ik_test.py" output="screen"/>
+</launch>
