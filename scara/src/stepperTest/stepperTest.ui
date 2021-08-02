@@ -152,35 +152,6 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QSlider" name="slider4">
-    <property name="geometry">
-     <rect>
-      <x>370</x>
-      <y>30</y>
-      <width>16</width>
-      <height>160</height>
-     </rect>
-    </property>
-    <property name="maximum">
-     <number>360</number>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Vertical</enum>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_6">
-    <property name="geometry">
-     <rect>
-      <x>370</x>
-      <y>200</y>
-      <width>41</width>
-      <height>18</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>0</string>
-    </property>
-   </widget>
   </widget>
  </widget>
  <resources/>
@@ -246,22 +217,6 @@
     <hint type="destinationlabel">
      <x>295</x>
      <y>217</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>slider4</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>label_6</receiver>
-   <slot>setNum(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>379</x>
-     <y>170</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>381</x>
-     <y>208</y>
     </hint>
    </hints>
   </connection>

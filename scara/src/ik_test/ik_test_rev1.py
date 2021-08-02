@@ -8,11 +8,11 @@ from math import sin, cos, acos, atan2, sqrt, radians, degrees
 
 import rospy
 from rospy.timer import Rate
-from scara.msg import stepper, encoder, syncEncoder
+from scara.msg import stepperTask, encoder, syncEncoder
 
-data = stepper()
-data.enableStepper = False
-data.stepperPostList = [0,0,0,0]
+data = stepperTask()
+data.enable = False
+data.stepperTaskList = [0,0,0,0]
 
 enc = syncEncoder()
 enc.tetha = [0,0,0,0]
@@ -28,6 +28,8 @@ class MainWindows(QMainWindow):
         title = "Manipulator GUI"
         '''coordinat pos'''
         global x_pos, y_pos, z_pos
+        global dataEncoder
+        dataEncoder = []
         x_pos, y_pos, z_pos = 0.0, 0.0, 0.0
 
         self.stepper_btn.clicked.connect(self.enable_stepper)
@@ -35,7 +37,7 @@ class MainWindows(QMainWindow):
         self.y_target_box.textChanged.connect(self.y_target_changed)
         self.z_target_box.textChanged.connect(self.z_target_changed)
         self.run_ik_btn.clicked.connect(self.run_ik)
-        self.sync_encoder.clicked.connect(self.sync_encoder_handler)
+        self.sync.clicked.connect(self.sync_handler)
 
         '''subcribe from sensor data and show it in GUI'''
         self.sub_sensor = rospy.Subscriber("encoder", encoder, self.encoder_callback)
@@ -43,21 +45,21 @@ class MainWindows(QMainWindow):
     def x_target_changed(self, value):
         global x_pos
         try:
-            x_pos = float(value)
+            x_pos = int(value)
         except ValueError:
             rospy.loginfo(f"{value} can't be float")
 
     def y_target_changed(self, value):
         global y_pos
         try:
-            y_pos = float(value)
+            y_pos = int(value)
         except ValueError:
             rospy.loginfo(f"{value} can't be float")
 
     def z_target_changed(self, value):
         global z_pos
         try:
-            z_pos = float(value)
+            z_pos = int(value)
             print(z_pos)
         except ValueError:
             rospy.loginfo(f"{value} can't be float")
@@ -66,7 +68,6 @@ class MainWindows(QMainWindow):
         x,y,z = x_pos, y_pos, z_pos
         print(x,y,z)
         l1, l2, l3 = 70.2, 152.7, 149.7
-        high = 1
         try:
             tetha1 = degrees(atan2(x, y))
             # y tujuan-l1 dan x tujuan menjadi nol
@@ -85,16 +86,26 @@ class MainWindows(QMainWindow):
             C = degrees(atan2(buff3,buff1))
             tetha2 = B - C
             #z = z #nanti di kali gain / di konvert ke scala / derajat
+            a, b, c = tetha1, tetha2, tetha3
+            b += a
+            c += b
+            hasil_y = l1*cos(radians(a)) + l2*cos(radians(b)) + l3*cos(radians(c))
+            hasil_x = l1*sin(radians(a)) + l2*sin(radians(b)) + l3*sin(radians(c))
+            hasil_z = z
             
-            data.stepperPostList[0] = tetha1
-            data.stepperPostList[1] = tetha2
-            data.stepperPostList[2] = tetha3
-            data.stepperPostList[3] = z
+            data.stepperTaskList[0] = -int(tetha1 * 720 * 2 / 360)
+            data.stepperTaskList[1] = int(tetha2 * 730 * 2 / 360)
+            data.stepperTaskList[2] = int(tetha3 * 1220 * 2 / 360)
+            data.stepperTaskList[3] = -int(z * 7000 * 2 / 360)
 
             self.tetha1_target_label.setText(str(tetha1))
             self.tetha2_target_label.setText(str(tetha2))
             self.tetha3_target_label.setText(str(tetha3))
             self.tinggi_target_label.setText(str(z))
+
+            self.x_hasil.setText(str(hasil_x))
+            self.y_hasil.setText(str(hasil_y))
+            self.z_hasil.setText(str(hasil_z))
             #return [tetha1, tetha2, tetha3, z]
             self.publish()
 
@@ -104,37 +115,49 @@ class MainWindows(QMainWindow):
     def enable_stepper(self, checked):
         if(checked):
             self.stepper_btn.setText("STEPPER ON")
-            data.enableStepper = True
+            data.enable = True
         else:
             self.stepper_btn.setText("STEPPER OFF")
-            data.enableStepper = False
+            data.enable = False
         self.publish()
     
     def publish(self):
         pub.publish(data)
 
     def encoder_callback(self,data):
+        global dataEncoder
         tetha1, tetha2, tetha3, tinggi = data.encoderPostList
         tetha1 = -tetha1 * 90 /2400
         tetha2 = -tetha2 * 88.76712328/2400
         tetha3 = -tetha3 * 53.114754098/2400
+        tinggi = -tinggi * 9.257142857 / 2400
+
+        dataEncoder = [tetha1, tetha2, tetha3, tinggi]
+        
         self.tetha1_real_label.setText(str(tetha1))
         self.tetha2_real_label.setText(str(tetha2))
         self.tetha3_real_label.setText(str(tetha3))
         self.tinggi_real_label.setText(str(tetha3))
 
-    def sync_encoder_handler(self, checked):
-        enc.tetha[0] = int(-data.stepperPostList[0] * 2400/90)
-        enc.tetha[1] = int(data.stepperPostList[1] * 2400/88.76712328)
-        enc.tetha[2] = int(-data.stepperPostList[0] * 2400/53.114754098)
-        enc.tetha[3] = int(-data.stepperPostList[0]) *2400/9.257142857
-        if checked:
-            enc_pub.publish(enc)
+    def sync_handler(self):
+        tetha1, tetha2, tetha3, tinggi = dataEncoder
+        # tetha1 = -tetha1 * 90 /2400
+        # tetha2 = -tetha2 * 88.76712328/2400
+        # tetha3 = -tetha3 * 53.114754098/2400
+        # tinggi = -tinggi * 9.257142857 / 2400
+        print(tetha1,tetha2,tetha3)
+        
+        data.stepperTaskList[0] = -int(tetha1 * 720 * 2 / 360)
+        data.stepperTaskList[1] = int(tetha2 * 730 * 2 / 360)
+        data.stepperTaskList[2] = int(tetha3 * 1220 * 2 / 360)
+        data.stepperTaskList[3] = -int(tinggi * 7000 * 2 / 360)
+        self.publish()
+        
 
 
 
-rospy.init_node('invers_kinematics_gui')
-pub = rospy.Publisher('invers_kinematics_gui', stepper, queue_size=10)
+rospy.init_node('invers_kinematics_gui_rev1')
+pub = rospy.Publisher('invers_kinematics_gui_rev1', stepperTask, queue_size=10)
 enc_pub = rospy.Publisher('sync_encoder',syncEncoder, queue_size=10)
 
 app = QApplication(sys.argv)

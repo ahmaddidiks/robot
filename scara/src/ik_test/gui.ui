@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>682</width>
-    <height>212</height>
+    <width>687</width>
+    <height>403</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -396,7 +396,7 @@
      <string>0</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="sync_encoder">
+   <widget class="QPushButton" name="sync">
     <property name="geometry">
      <rect>
       <x>540</x>
@@ -411,10 +411,106 @@
      </font>
     </property>
     <property name="text">
-     <string>SYNC ENCODER</string>
+     <string>SYNC</string>
     </property>
     <property name="checkable">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labels2_ik_3">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>220</y>
+      <width>91</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Y axes</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="z_hasil">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>250</y>
+      <width>67</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="y_hasil">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>220</y>
+      <width>67</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labels3_ik_4">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>250</y>
+      <width>91</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Z axes</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="x_hasil">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>190</y>
+      <width>67</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labels1_ik_3">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>190</y>
+      <width>91</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>X axes</string>
     </property>
    </widget>
   </widget>

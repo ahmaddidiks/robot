@@ -54,6 +54,8 @@ add_message_files(
   encoder.msg
   link.msg
   syncEncoder.msg
+  stepperTask.msg
+  stepperResponse.msg
 )
 
 ## Generate services in the 'srv' folder

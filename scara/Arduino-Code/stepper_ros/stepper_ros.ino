@@ -1,18 +1,18 @@
 #include <ros.h>
 #include <scara/stepper.h>
 
-#define stepper_num 3
+#define stepper_num 4
 //#define vel 180
-const int vel[4] {25, 24, 20, 180};
+const int vel[4] {25, 24, 20, 3};
 //#define ppr 360
-int  ppr[4] {720, 730, 1220, 200};
+int  ppr[4] {720, 730, 1220, 7000};
 // #define pprLink1 800
 // #define pprLink2 811
 // #define pprLink3 1357
 
 // defines pins numbers
-const int STEP[4] = {23, 21, 18, 33};
-const int DIR[4]  = {22, 19, 5, 32};
+const int STEP[4] = {23, 21, 18, 26};
+const int DIR[4]  = {22, 19, 5, 14};
 #define enable 25
 
 float _velSet[stepper_num];

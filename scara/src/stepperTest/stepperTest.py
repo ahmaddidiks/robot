@@ -15,7 +15,7 @@ from PyQt5.uic import loadUi
 #global ROS var (scara msgs)
 data = stepper()
 data.enableStepper = False
-data.stepperPostList = [0,0,0,0,0]
+data.stepperPostList = [0,0,0,0]
 
 #inisasi node
 rospy.init_node("stepper_test_gui")
@@ -32,7 +32,6 @@ class MainUI(QMainWindow):
         self.slider1.valueChanged.connect(self.slider1Changed)
         self.slider2.valueChanged.connect(self.slider2Changed)
         self.slider3.valueChanged.connect(self.slider3Changed)
-        self.slider4.valueChanged.connect(self.slider4Changed)
 
     def buttonHandler(self, checked):
         if(checked):
@@ -65,16 +64,10 @@ class MainUI(QMainWindow):
             rospy.loginfo("slider 2 ERROR")
     def slider3Changed(self, text):
         try:
-            data.stepperPostList[3] = float(text)
+            data.stepperPostList[3] = -float(text)
             self.publish()
         except:
             rospy.loginfo("slider 3 ERROR")
-    def slider4Changed(self, text):
-        try:
-            data.stepperPostList[4] = float(text)
-            self.publish()
-        except:
-            rospy.loginfo("slider 4 ERROR")
 
     def publish(self):
         pub.publish(data)

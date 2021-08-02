@@ -56,6 +56,6 @@ void loop(){
   print_value();  
   pub_enc.publish(&encoder_msg);
   nh.spinOnce();
-  delay(10);
+  delay(20);
     
 }

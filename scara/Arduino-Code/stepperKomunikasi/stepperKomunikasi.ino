@@ -1,18 +1,18 @@
 #include <ros.h>
 #include <scara/stepper.h>
 
-#define stepper_num 3
+#define stepper_num 4
 //#define vel 180
-const int vel[4] {25, 25, 20, 180};
+const int vel[4] {25, 25, 20, 3};
 //#define ppr 360
-int  ppr[4] {720, 720, 1220, 200};
+int  ppr[4] {720, 720, 1220, 7000};//720, 720, 1220, 7000};
 // #define pprLink1 800
 // #define pprLink2 811
 // #define pprLink3 1357
 
 // defines pins numbers
-const int STEP[4] = {23, 21, 18, 33};
-const int DIR[4]  = {22, 19, 5, 32};
+const int STEP[stepper_num] = {23, 21, 18, 26};
+const int DIR[stepper_num]  = {22, 19, 5, 14};
 #define enable 25
 
 float _velSet[stepper_num];
@@ -36,10 +36,10 @@ void stepper_cb(const scara::stepper& stepper_msg){
 ros::Subscriber<scara::stepper> sub("stepper_test_gui", stepper_cb);
 
 void setup(){
-  pinMode(2, OUTPUT);
+
   nh.initNode();
   nh.subscribe(sub);
-  for (int i=0; i<4;i++){
+  for (int i=0; i<stepper_num;i++){
     pinMode(STEP[i], OUTPUT);
     pinMode(DIR[i], OUTPUT);
   }
@@ -66,7 +66,7 @@ void stepperControl(int id) {
   else if (_pulseCount[id] > _pulseCountTarget[id]) _velSet[id] = -vel[id];
   else _velSet[id] = 0;
 
-  if ((_velSet[id] != 0) && (micros() - _stepperLastT[id] >= getDelayDuration(abs(_velSet[id]), id))) {
+  if ((_velSet[id] != 0) && (micros() - _stepperLastT[id] >= 700)){//getDelayDuration(abs(_velSet[id]), id))) {
     if (_velSet[id] < 0) {
       digitalWrite(DIR[id], HIGH);
       _pulseCount[id]--;
