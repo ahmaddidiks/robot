@@ -1,7 +1,7 @@
 <launch>  
   <arg name="model" default="$(find scara8)/urdf/scara8.urdf"/>
   <arg name="gui" default="true" />
-  <arg name="rvizconfig" default="$(find scara8)/urdf.rviz" />
+  <arg name="rvizconfig" default="$(find scara8)/rviz/scara.rviz" />
 
   <param
     name="robot_description"
@@ -18,5 +18,5 @@
     name="rviz"
     pkg="rviz"
     type="rviz"
-    args="-d $(find scara8)/urdf.rviz" />
+    args="-d $(find scara8)/rviz/scara.rviz" />
 </launch>
