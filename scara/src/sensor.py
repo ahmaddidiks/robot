@@ -12,13 +12,13 @@ b = 0.2
 c = radians(30)
 d = radians(40)
 sensor.position = [a,b,c,d]
-# sensor.name = ['joint1', 'joint2', 'joint3', 'joint4']
+sensor.name = ['joint1', 'joint2', 'joint3', 'joint4']
 # sensor.position = [0.0, 0.0, 0.0, 0.0]
 
 rospy.init_node("sensor")
 rate = rospy.Rate(60)
 print('test')
-pub = rospy.Publisher('sensor', JointState, queue_size=10)
+pub = rospy.Publisher('joint_states', JointState, queue_size=10)
 
 # def sensor_callback(data):
 #     tetha1, tetha2, tetha3, tinggi = data.encoderPostList
@@ -46,5 +46,6 @@ pub = rospy.Publisher('sensor', JointState, queue_size=10)
 if __name__ == "__main__":
     while not rospy.is_shutdown():
         # rospy.Subscriber("joint_states", JointState, sensor)
+        sensor.header.stamp = rospy.Time.now()
         pub.publish(sensor)
         rate.sleep()
