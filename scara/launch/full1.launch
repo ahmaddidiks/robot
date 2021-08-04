@@ -1,0 +1,9 @@
+<launch>
+  
+  <include file="$(find robot_launch)/launch/serial.launch" />
+  <include file="$(find scara8)/launch/display.launch" />
+  <node name="invers_kineamtics" pkg="scara" type="full1.py" output="screen"/>
+  <node name="bridge" pkg="scara" type="full1_sensor.py" output="screen"/>
+  
+
+</launch>
