@@ -10,6 +10,12 @@
     name="joint_state_publisher_gui"
     pkg="joint_state_publisher_gui"
     type="joint_state_publisher_gui" /> -->
+  <!-- <node
+    name="joint_state_publisher_gui"
+    pkg="scara"
+    type="speed_test.py" /> -->
+  <node name="gui" pkg="scara" type="speed_test.py" output="screen"/>
+  <node name="ik" pkg="scara" type="speed_test_ik.py" output="screen"/>
   <node
     name="robot_state_publisher"
     pkg="robot_state_publisher"
@@ -19,4 +25,6 @@
     pkg="rviz"
     type="rviz"
     args="-d $(find scara8)/rviz/scara.rviz" />
+
+  <!-- <node name="harware" pkg="rosserial_python" type="serial_node.py" output="screen"/> -->
 </launch>

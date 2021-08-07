@@ -1,2 +1,4 @@
 
 .vscode/arduino.json
+scara/src/armGUI/Pseudo-Inverse-Jacobian-Inverse-Kinematics/
+scara/visual-kinematics/visual_kinematics/
