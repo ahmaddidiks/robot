@@ -5,8 +5,6 @@ import rospy
 from geometry_msgs.msg import Point
 import numpy as np
 
-from rospy.timer import sleep
-
 benda = Point()
 meja = Point()
 gerak = Point()
@@ -23,14 +21,13 @@ def point_callback(traj):
     Y = np.linspace(y_awal, benda.y, 10)
     Z = np.linspace(z_awal, benda.z, 10)
 
-    for i in range(0, len(X)):
-        gerak.x = X[i]
-        gerak.y = Y[i]
-        gerak.z = Z[i]
+    while count < 10:
+        gerak.x = X[count]
+        gerak.y = Y[count]
+        gerak.z = Z[count]
         pub.publish(gerak)
-        # count +=1
-        # print(count)
-        sleep(1)
+        count +=1
+        print(count)
             
 def meja_callback(traj):
     meja.x, meja.y, meja.z = traj.x, traj.y, traj.z

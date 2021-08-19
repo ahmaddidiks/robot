@@ -14,7 +14,7 @@ stepper = Bool()
 
 rospy.init_node('robot_position')
 pub = rospy.Publisher('position', Quaternion, queue_size=10)
-        
+     
 class MainWindow(QMainWindow):
     def __init__(self, parent= None):
         super(MainWindow, self).__init__(parent)
