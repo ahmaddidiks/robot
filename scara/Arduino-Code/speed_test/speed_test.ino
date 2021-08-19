@@ -1,19 +1,20 @@
 #include <ros.h>
-#include <sensor_msgs/JointState.h>
-#include <std_msgs/Bool.h>
-#include <scara/stepper.h>
+#include <scara_like/stepper.h>
+#include <Servo.h>
+Servo servo;
 
 #define stepper_num 4
 //velocity
-const int vel[4] {25, 3, 24, 20};
-//float vel[stepper_num];
+//const int vel[4] {25, 3, 24, 20};
+float vel[stepper_num];
 //PPR
 const int  ppr[stepper_num] {720, 7000, 730, 1220};
 
 // defines pins numbers
 const int STEP[stepper_num] = {23, 21, 18, 26};
 const int DIR[stepper_num]  = {22, 19, 5, 14};
-#define enable 25
+
+#define EN 25
 
 float _velSet[stepper_num];
 long _pulseCount[stepper_num];
@@ -24,19 +25,15 @@ float tetha[stepper_num];
 long waktu;
 
 ros::NodeHandle nh;
-sensor_msgs::JointState joints;
-std_msgs::Bool enableStepper;
-scara::stepper fb_msg;
-//fb_msg
-ros::Publisher fb_pub("stepper_response", &fb_msg);
+scara_like::stepper msg;
 
-void enable_stepper_cb(const std_msgs::Bool &enableStepper){
-//  if(enableStepper.data == false) digitalWrite(enable, HIGH);
-//  else digitalWrite(enable, LOW);
-}
-void stepper_cb(const sensor_msgs::JointState &joints){
+void stepper_cb(const scara_like::stepper &joints){
+  if (joints.enable == false) digitalWrite(EN, HIGH);
+  else digitalWrite(EN, LOW);
+  servo.write(joints.gripper);
+  
   for (int i=0; i < stepper_num; i++) {
-//    vel[i] = joints.velocity[i]; //set stepper velocity from joint state
+    vel[i] = joints.speed[i]; //set stepper velocity from joint state
     if(i==1){
       tetha[i] = joints.position[i] / 0.3 * 360; //mengubah ke derajat dari tinggi 0-0.3 meter
       _pulseCountTarget[i] = -tetha[i] / 360 * ppr[i] * 2;
@@ -48,24 +45,19 @@ void stepper_cb(const sensor_msgs::JointState &joints){
   }
 }
 
-ros::Subscriber<sensor_msgs::JointState> joints_sub("joint_states", stepper_cb);
-ros::Subscriber<std_msgs::Bool> enable_stepper_sub("enable_stepper", enable_stepper_cb);
+ros::Subscriber<scara_like::stepper> joints_sub("real_robot", stepper_cb);
 
 void setup(){
   nh.initNode();
   nh.subscribe(joints_sub);
-//  nh.subscribe(enable_stepper_sub);
-  nh.advertise(fb_pub);
-  
-  fb_msg.stepperPostList = (float*)malloc(sizeof(float) * 4);
-  fb_msg.stepperPostList_length = 4;
 
   for (int i=0; i<4;i++){
     pinMode(STEP[i], OUTPUT);
     pinMode(DIR[i], OUTPUT);
   }
-  pinMode(enable, OUTPUT);
-  digitalWrite(enable, LOW); //diactivate stepper
+  pinMode(EN, OUTPUT);
+  digitalWrite(EN, HIGH); //diactivate stepper
+  servo.attach(2); //pin servo D2
 }
 
 void loop(){
@@ -73,11 +65,6 @@ void loop(){
 
   for (int i=0; i < stepper_num; i++) {
     stepperControl(i);
-  }
-  if(millis() - waktu >= 10){
-  stepper_fb();
-  
-  waktu = millis();
   }
 }
 
@@ -105,13 +92,4 @@ void stepperControl(int id) {
     _stepperState[id] = !_stepperState[id];
     _stepperLastT[id] = micros();
   }
-}
-
-void stepper_fb(){
-  fb_msg.stepperPostList[0] = _pulseCount[0] * 360 / ppr[0] / 2;
-  fb_msg.stepperPostList[1] = _pulseCount[1] * 360 / ppr[1] / 2;
-  fb_msg.stepperPostList[1] = fb_msg.stepperPostList[1] * 0.3 / 360;
-  fb_msg.stepperPostList[2] = _pulseCount[2] * 360 / ppr[2] / 2;
-  fb_msg.stepperPostList[3] = _pulseCount[3] * 360 / ppr[3] / 2;
-  fb_pub.publish(&fb_msg);
 }

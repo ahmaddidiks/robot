@@ -4,8 +4,7 @@
 //#include <ArduinoHardware.h>
 
 #include <ros.h>
-#include <scara/encoder.h>
-//#include <scara/syncEncoder.h>
+#include <scara_like/encoder.h>
 
 ESP32Encoder encoder0;
 ESP32Encoder encoder1;
@@ -14,7 +13,7 @@ ESP32Encoder encoder3;
 
 ros::NodeHandle nh;
 
-scara::encoder encoder_msg;
+scara_like::encoder encoder_msg;
 //scara::syncEncoder sync_encoder_msg;
 
 ros::Publisher pub_enc("encoder", &encoder_msg);

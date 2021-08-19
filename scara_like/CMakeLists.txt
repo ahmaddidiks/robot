@@ -50,6 +50,9 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   FILES
   target.msg
+  stepper.msg
+  sensor_data.msg
+  encoder.msg
 )
 
 ## Generate services in the 'srv' folder
