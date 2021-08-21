@@ -13,10 +13,9 @@ ESP32Encoder encoder3;
 
 ros::NodeHandle nh;
 
-scara_like::encoder encoder_msg;
-//scara::syncEncoder sync_encoder_msg;
+scara_like::encoder encoder;
 
-ros::Publisher pub_enc("encoder", &encoder_msg);
+ros::Publisher pub_enc("encoder_counter_raw", &encoder);
 
 //void sync_handler(const scara::syncEncoder &sync_encoder_msg){
 //  encoder0.setCount(sync_encoder_msg.tetha[0]);
@@ -26,8 +25,6 @@ ros::Publisher pub_enc("encoder", &encoder_msg);
 //}
 //
 //ros::Subscriber<scara::syncEncoder> sub("sync_encoder", sync_handler);
-
-float deg[4] = {0.00,0.00,0.00,0.00};
 
 void setup(){
 //    Serial.begin(57600);
@@ -43,18 +40,19 @@ void setup(){
     nh.initNode();
 
     nh.advertise(pub_enc);
-
-    encoder_msg.encoderPostList = (float*)malloc(sizeof(float) * 4);
-
-    encoder_msg.encoderPostList_length = 4;
+    encoder.count = (int*)malloc(sizeof(int) * 4);
+    encoder.count_length = 4;
+//    encoder_msg.encoderPostList = (float*)malloc(sizeof(float) * 4);
+//
+//    encoder_msg.encoderPostList_length = 4;
 }
 
 void loop(){
-//    Serial.println("Encoder count 1 : "+String((int32_t)encoder0.getCount())+" 2 : "+String((int32_t)encoder1.getCount())+" 3 : "+String((int32_t)encoder2.getCount())+" 4 : "+String((int32_t)encoder3.getCount())+" 5: "+String((int32_t)encoder4.getCount()));
-  getDegree();
+//    Serial.println("Encoder count 1 : "+String((int32_t)encoder0.getCount())+" 2 : "+String((int32_t)encoder1.getCount())+" 3 : "+String((int32_t)encoder2.getCount())+" 4 : "+String((int32_t)encoder3.getCount())+" 5: "));
+  get_counter();
 //  print_value();  
-  pub_enc.publish(&encoder_msg);
+  pub_enc.publish(&encoder);
   nh.spinOnce();
-  delay(20);
+  delay(10);
     
 }

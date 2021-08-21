@@ -1,5 +1,6 @@
 #include <ros.h>
 #include <scara_like/stepper.h>
+#include <std_msgs/Int32.h>
 #include <Servo.h>
 Servo servo;
 
@@ -30,10 +31,9 @@ scara_like::stepper msg;
 void stepper_cb(const scara_like::stepper &joints){
   if (joints.enable == false) digitalWrite(EN, HIGH);
   else digitalWrite(EN, LOW);
-  servo.write(joints.gripper);
   
   for (int i=0; i < stepper_num; i++) {
-    vel[i] = joints.speed[i]; //set stepper velocity from joint state
+//    vel[i] = joints.speed[i]; //set stepper velocity from joint state
     if(i==1){
       tetha[i] = joints.position[i] / 0.3 * 360; //mengubah ke derajat dari tinggi 0-0.3 meter
       _pulseCountTarget[i] = -tetha[i] / 360 * ppr[i] * 2;
@@ -45,11 +45,18 @@ void stepper_cb(const scara_like::stepper &joints){
   }
 }
 
+void gripper_cb(const std_msgs::Int32 &gripper){
+  servo.write(gripper.data);
+}
+
 ros::Subscriber<scara_like::stepper> joints_sub("real_robot", stepper_cb);
+ros::Subscriber<std_msgs::Int32> gripper_sub("gripper", gripper_cb);
+
 
 void setup(){
   nh.initNode();
   nh.subscribe(joints_sub);
+  nh.subscribe(gripper_sub);
 
   for (int i=0; i<4;i++){
     pinMode(STEP[i], OUTPUT);
