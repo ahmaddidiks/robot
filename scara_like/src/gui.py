@@ -2,15 +2,12 @@
 
 import rospy
 from scara_like.msg import target
-from math import sin, cos, acos, atan2, sqrt, radians, degrees
 
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.uic import loadUi
 
 ik_target = target()
-ik_target.benda = [0,0,0,0]
-ik_target.meja = [0,0,0,0]
 
 #initial benda geometry in mm (cartesian)
 benda_x = 0
@@ -85,35 +82,13 @@ class MainWindows(QMainWindow):
             rospy.loginfo('meja.z salah')
             meja_z = 0
     
-    def ik(self, x,y,z):
-        l1, l2, l3 = 70.2, 152.7, 149.7
-        try:
-            tetha1 = degrees(atan2(x, y))
-            # y tujuan-l1 dan x tujuan menjadi nol
-            y = sqrt(x**2 + y**2) - l1
-            x = 0
-            # print(x,y)
-            #
-            A = (y**2 + x**2 - l2**2 - l3**2) /(2*l2*l3)
-            tetha4 = degrees(acos(A))
-            
-            buff1 = l3*cos(radians(tetha4)) + l2
-            buff2 = sqrt(x**2)
-            buff3 = l3*sin(radians(tetha4))
-
-            B = degrees(atan2(buff2,x))
-            C = degrees(atan2(buff3,buff1))
-            tetha3 = B - C
-            tetha2 = z/300 * 360
-            #sesuai joint
-            return [tetha1, tetha2, tetha3, tetha4]
-        except:
-            rospy.loginfo('ik gagal')
-            return [0,0,0,0]
-
     def publish(self):
-        ik_target.benda = self.ik(benda_x, benda_y, benda_z)
-        ik_target.meja = self.ik(meja_x, meja_y, meja_z)
+        ik_target.benda.x = benda_x
+        ik_target.benda.y = benda_y
+        ik_target.benda.z = benda_z
+        ik_target.meja.x = meja_x
+        ik_target.meja.y = meja_y
+        ik_target.meja.z = meja_z
         pub.publish(ik_target)
 
 app = QApplication(sys.argv)

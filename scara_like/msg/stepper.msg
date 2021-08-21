@@ -1,4 +1,3 @@
 float32[] position
-int32[] speed
+float32[] speed
 bool enable
-int32 gripper

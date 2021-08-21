@@ -1,2 +1,1 @@
-float32[] encoderPostList
-bool resetEncoder
+int32[] count

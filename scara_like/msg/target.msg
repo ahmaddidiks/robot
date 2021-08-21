@@ -1,2 +1,2 @@
-float32[] benda
-float32[] meja
+geometry_msgs/Point benda
+geometry_msgs/Point meja
