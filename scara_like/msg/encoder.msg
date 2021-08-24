@@ -1,1 +1,1 @@
-int32[] count
+float32[] deg

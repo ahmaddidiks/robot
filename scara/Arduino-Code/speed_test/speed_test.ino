@@ -1,6 +1,6 @@
 #include <ros.h>
 #include <scara_like/stepper.h>
-#include <scara_like/sensor_data.h>
+#include <scara_like/encoder.h>
 #include <std_msgs/Int32.h>
 #include <Servo.h>
 Servo servo;
@@ -29,55 +29,61 @@ long waktu;
 
 ros::NodeHandle nh;
 
-void stepper_cb(const scara_like::stepper &joints){
+void stepper_cb(const scara_like::stepper &joints) {
   if (joints.enable == false) digitalWrite(EN, HIGH);
   else digitalWrite(EN, LOW);
-  
-  for (int i=0; i < stepper_num; i++) {
-      vel[i] = joints.speed[i]; //set stepper velocity from joint state
-        tetha[i] = -joints.position[i];
-        if (i>1){
-          tetha[i] = joints.position[i];
-        }
-      _pulseCountTarget[i] = tetha[i] / 360 * ppr[i] * 2;
+
+  for (int i = 0; i < stepper_num; i++) {
+    vel[i] = joints.speed[i]; //set stepper velocity from joint state
+    tetha[i] = -joints.position[i];
+    if (i > 1) {
+      tetha[i] = joints.position[i];
     }
+    _pulseCountTarget[i] = tetha[i] / 360 * ppr[i] * 2;
   }
+}
 //}
 
-void gripper_cb(const std_msgs::Int32 &gripper){
+void gripper_cb(const std_msgs::Int32 &gripper) {
   servo.write(gripper.data);
 }
 
-void sensor_data_cb(const scara_like::sensor_data &data){
-  for (int i=0; i < stepper_num; i++){
-//      _pulseCount[i] = data.joints[i] / 360 * ppr[i] * 2;
-        tetha_pos[i] = data.joints[i];
+void sensor_data_cb(const scara_like::encoder &data) {
+  for (int i = 0; i < stepper_num; i++) {
+    //      _pulseCount[i] = data.joints[i] / 360 * ppr[i] * 2;
+    if (i > 1) {
+      tetha_pos[i] = data.deg[i];
+    }
+    else {
+      tetha_pos[i] = -data.deg[i];
+    }
   }
 }
 ros::Subscriber<scara_like::stepper> joints_sub("real_robot", stepper_cb);
 ros::Subscriber<std_msgs::Int32> gripper_sub("gripper", gripper_cb);
-ros::Subscriber<scara_like::sensor_data> sensor_data_sub("data_sensor_publisher", sensor_data_cb);
+ros::Subscriber<scara_like::encoder> sensor_data_sub("sensor_data", sensor_data_cb);
 
 
-void setup(){
+void setup() {
   nh.initNode();
   nh.subscribe(joints_sub);
   nh.subscribe(gripper_sub);
   nh.subscribe(sensor_data_sub);
 
-  for (int i=0; i<4;i++){
+  for (int i = 0; i < 4; i++) {
     pinMode(STEP[i], OUTPUT);
     pinMode(DIR[i], OUTPUT);
   }
   pinMode(EN, OUTPUT);
   digitalWrite(EN, HIGH); //diactivate stepper
   servo.attach(2); //pin servo D2
+  servo.write(5); //open gripper
 }
 
-void loop(){
+void loop() {
   nh.spinOnce();
 
-  for (int i=0; i < stepper_num; i++) {
+  for (int i = 0; i < stepper_num; i++) {
     stepperControl(i);
   }
 }
@@ -89,13 +95,19 @@ long getDelayDuration(float degPerSec, int id) {
 }
 
 void stepperControl(int id) {
-//  if (_pulseCount[id] < _pulseCountTarget[id]) _velSet[id] = vel[id];
-//  else if (_pulseCount[id] > _pulseCountTarget[id]) _velSet[id] = -vel[id];
-  if(abs(tetha_pos[id] - tetha[id]) > 0.5){
-      if (tetha_pos[id] < tetha[id]) _velSet[id] = vel[id];
-      else if (tetha_pos[id] > _pulseCountTarget[id]) _velSet[id] = -vel[id];
-    }
-  
+
+  if (abs(tetha_pos[id] - tetha[id]) > 0.5) {
+    if (tetha_pos[id] < tetha[id]) _velSet[id] = vel[id];
+    else if (tetha_pos[id] > tetha[id]) _velSet[id] = -vel[id];
+  }
+  //  else if(0.5 < abs(tetha_pos[id] - tetha[id]) < 3){
+  //    if (tetha_pos[id] < tetha[id]) _velSet[id] = 10;
+  //    else if (tetha_pos[id] > tetha[id]) _velSet[id] = -10;
+  //  }
+
+
+  //  if (_pulseCount[id] < _pulseCountTarget[id]) _velSet[id] = vel[id];
+  //  else if (_pulseCount[id] > _pulseCountTarget[id]) _velSet[id] = -vel[id];
   else _velSet[id] = 0;
 
   if ((_velSet[id] != 0) && (micros() - _stepperLastT[id] >= getDelayDuration(abs(_velSet[id]), id))) {
@@ -111,4 +123,4 @@ void stepperControl(int id) {
     _stepperState[id] = !_stepperState[id];
     _stepperLastT[id] = micros();
   }
-}
+} 

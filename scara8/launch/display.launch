@@ -14,8 +14,8 @@
     name="joint_state_publisher_gui"
     pkg="scara"
     type="speed_test.py" /> -->
-  <node name="gui" pkg="scara" type="speed_test.py" output="screen"/>
-  <node name="ik" pkg="scara" type="speed_test_ik.py" output="screen"/>
+  <!-- <node name="gui" pkg="scara" type="speed_test.py" output="screen"/>
+  <node name="ik" pkg="scara" type="speed_test_ik.py" output="screen"/> -->
   <node
     name="robot_state_publisher"
     pkg="robot_state_publisher"

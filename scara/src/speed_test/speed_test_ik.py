@@ -2,7 +2,6 @@
 
 from sys import path
 import rospy
-from rospy.topics import Publisher
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Quaternion
 from geometry_msgs.msg import PointStamped, PoseStamped
