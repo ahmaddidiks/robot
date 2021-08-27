@@ -8,7 +8,7 @@ from std_msgs.msg import Float32MultiArray, Empty
 
 error = 0.5               #deg
 init = [0, 0, 0, 0]
-v_max = [50, 40, 50, 50]#[25,20,25,25]#[50, 40, 50, 50]
+v_max = [40,40,40,40] #[25,25,25,25]#[50, 40, 50, 50]
 b = list()
 c = list()
 data_sensor = list()
@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
     data = stepper()
 
-    rate = rospy.Rate(20)
+    rate = rospy.Rate(60)
     while not rospy.is_shutdown():
         if angle_target != None:
             t = time.time() - time_start

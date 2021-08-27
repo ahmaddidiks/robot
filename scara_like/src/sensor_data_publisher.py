@@ -15,8 +15,6 @@ joints.position = [0,0,0,0]
 point = PointStamped()
 point.header.frame_id = "base_link"
 
-poseStamped = PoseStamped()
-
 path = Path()
 path.header.frame_id = "base_link"
 path.poses = []
@@ -29,9 +27,9 @@ def forward_kinematics(data):
     tetha = data
     tetha[2] += tetha[0]
     tetha[3] += tetha[2]
-    y = l1*cos(radians(tetha[0])) + l2*cos(radians(tetha[2])) + l3*cos(radians(tetha[3]))
-    x = l1*sin(radians(tetha[0])) + l2*sin(radians(tetha[2])) + l3*sin(radians(tetha[3])) 
-    z = float(tetha[1] * 0.3 / 360)
+    y = -(l1*cos(radians(tetha[0])) + l2*cos(radians(tetha[2])) + l3*cos(radians(tetha[3])))/1000
+    x = -(l1*sin(radians(tetha[0])) + l2*sin(radians(tetha[2])) + l3*sin(radians(tetha[3])))/1000
+    z = tetha[1] * 0.3 / 360 + 50/1000
     return x,y,z
 
 def sensor_cb(data):
@@ -49,6 +47,7 @@ def make_joints():
 
 def make_path():
     global data_ke
+    poseStamped = PoseStamped()
     poseStamped.pose.position.x, poseStamped.pose.position.y, poseStamped.pose.position.z = forward_kinematics(sudut)
     poseStamped.header.stamp = rospy.Time.now()
     data_ke += 1
@@ -64,6 +63,7 @@ if __name__ == '__main__':
     
     while not rospy.is_shutdown():
         joints.header.stamp = rospy.Time.now()
+        path.header.stamp = rospy.Time.now()
         joints.position =  make_joints()
         joints_pub.publish(joints)
         make_path()

@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 
+from os import write
 import rospy
 from scara_like.msg import target, encoder
 from std_msgs.msg import Float32MultiArray, Empty, Int32
 from geometry_msgs.msg import Point
 from math import sin, cos, degrees, radians, atan2, sqrt, acos
 
+import csv
+
 meja = Point()
 benda = Point()
 present = Point()
 start = False
 finish = False
+pos = [0,0,0,0]
 
 def target_cb(data):
     global benda, meja, start
@@ -20,7 +24,7 @@ def target_cb(data):
     start = True
 
 def angle_cb(data):
-    global present
+    global present, pos
     pos = list(data.deg)
     present.x, present.y, present.z = forward_kinematics(pos)
 
@@ -71,6 +75,28 @@ def ik(x,y,z):
             rospy.loginfo('ik gagal')
             return [0,0,0,0]
 
+
+def csv_save(iter):
+    data = [iter]
+    
+    target_tetha = list(angle_target.data)
+    aktual_tetha = pos
+    for i in range(len(aktual_tetha)):
+        aktual_tetha[i] = round(aktual_tetha[i], 4)
+        target_tetha[i] = round(target_tetha[i], 4)
+
+    target_posisi = [benda.x, benda.y, benda.z]
+    aktual_posisi = [present.x, present.y, present.z*1000]
+    for i in range(len(aktual_posisi)):
+        target_posisi[i] = round(target_posisi[i], 4)
+        aktual_posisi[i] = round(aktual_posisi[i], 4)
+
+    data = data + target_tetha + aktual_tetha + target_posisi + aktual_posisi
+    # print(data)
+
+    writer.writerow(data)
+
+
 if __name__ == "__main__":
     rospy.init_node("angle_target_publisher")
     rospy.Subscriber("ik_target", target, target_cb)
@@ -82,49 +108,61 @@ if __name__ == "__main__":
     gripper = Int32()
 
     rate = rospy.Rate(20)
+
+    '''save data'''
+    f = open('/home/didik/robot/src/scara_like/data_percobaan/ik_test.csv', 'w')
+    writer = csv.writer(f)
+    header = ['percobaan', 'target tetha 1', 'target tetha 2', 'target tetha 3', 'target tetha 4',\
+                            'aktual tetha 1', 'aktual tetha 2', 'aktual tetha 3', 'aktual tetha 4',\
+                            'target pos x', 'target pos y', 'target pos z',\
+                            'aktual pos x', 'aktual pos y', 'aktual pos z']
+    writer.writerow(header)
+    percobaan = 0
+
     while not rospy.is_shutdown():
         if start:
-            # print(start)
-            rospy.loginfo('menuju sub 1 benda')
+            rospy.loginfo('mulai')
             angle_target = Float32MultiArray()
-            angle_target.data = ik(present.x, present.y, 100)
+
+            angle_target.data = ik(present.x, present.y, benda.z)
             angle_target_pub.publish(angle_target)
             wait_finish()
-            
-            rospy.loginfo('menuju sub 2 benda')
-            angle_target.data = ik(benda.x, benda.y, 100)
+            csv_save(percobaan)
+
+            rospy.loginfo('menuju sub 1 benda')
+            angle_target.data = ik(benda.x, benda.y, benda.z+15)
             angle_target_pub.publish(angle_target)
             wait_finish()
+            csv_save(percobaan)
 
             rospy.loginfo('menuju benda')
             angle_target.data = ik(benda.x, benda.y, benda.z)
             angle_target_pub.publish(angle_target)
             wait_finish()
+            csv_save(percobaan)
 
             rospy.loginfo('gripper on')
-            # grip on
-            # for i in range(5,20):
-            #     gripper.data = i
-            #     gripper_pub.publish(gripper)
-            #     rospy.sleep(0.02)
             gripper.data = 20
             gripper_pub.publish(gripper)
             rospy.sleep(0.02)
 
             rospy.loginfo('menuju sub meja 1')
-            angle_target.data = ik(benda.x, benda.y, 100)
+            angle_target.data = ik(benda.x, benda.y, benda.z+90)
             angle_target_pub.publish(angle_target)
             wait_finish()
+            csv_save(percobaan)
 
             rospy.loginfo('menuju sub meja 2')
-            angle_target.data = ik(meja.x, meja.y, 100)
+            angle_target.data = ik(meja.x, meja.y, meja.z+80)
             angle_target_pub.publish(angle_target)
             wait_finish()
+            csv_save(percobaan)
 
             rospy.loginfo('menuju meja')
             angle_target.data = ik(meja.x, meja.y, meja.z)
             angle_target_pub.publish(angle_target)
             wait_finish()
+            csv_save(percobaan)
 
             rospy.loginfo('gripper off')
             # grip off
@@ -136,14 +174,16 @@ if __name__ == "__main__":
             gripper_pub.publish(gripper)
             rospy.sleep(0.02)
 
-            angle_target.data = ik(meja.x, meja.y, 100)
+            angle_target.data = ik(meja.x, meja.y, meja.z+80)
             angle_target_pub.publish(angle_target)
             wait_finish()
+            csv_save(percobaan)
 
-            angle_target.data = ik(0, 270, 0)
+            angle_target.data = ik(0, 220, 0)
             angle_target_pub.publish(angle_target)
             wait_finish()
-
+            csv_save(percobaan)
+            
             start = False
         
         rate.sleep()
