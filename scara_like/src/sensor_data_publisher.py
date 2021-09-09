@@ -4,7 +4,7 @@ import rospy
 from rospy.timer import Rate
 from scara_like.msg import encoder
 from sensor_msgs.msg import JointState
-from geometry_msgs.msg import PointStamped, PoseStamped
+from geometry_msgs.msg import PointStamped, PoseStamped, Point
 from nav_msgs.msg import Path
 from math import cos, degrees, sin, radians
 
@@ -20,6 +20,8 @@ path.header.frame_id = "base_link"
 path.poses = []
 data_ke = 0
 sudut = [0,0,0,0]
+
+posisi = Point()
 
 def forward_kinematics(data):
     l1, l2, l3 = 70.2, 152.7, 149.7 #mm
@@ -54,11 +56,27 @@ def make_path():
     poseStamped.header.seq = data_ke
     path.poses.append(poseStamped)
 
+def fk(data):
+    l1, l2, l3 = 70.2, 152.7, 149.7 #mm
+    tetha = [0,0,0,0]
+    tetha = data
+    tetha[2] += tetha[0]
+    tetha[3] += tetha[2]
+    y = -(l1*cos(radians(tetha[0])) + l2*cos(radians(tetha[2])) + l3*cos(radians(tetha[3])))
+    x = -(l1*sin(radians(tetha[0])) + l2*sin(radians(tetha[2])) + l3*sin(radians(tetha[3])))
+    z = tetha[1] * 300 / 360
+    return x,y,z
+
+def make_posisi():
+    posisi.x, posisi.y, posisi.z = fk(sudut)
+    posisi_pub.publish(posisi)
+
 if __name__ == '__main__':
     rospy.init_node('sensor_publisher')
-    rate = Rate(30)
+    rate = Rate(40)
     joints_pub = rospy.Publisher("joint_states", JointState, queue_size=10)
     path_pub = rospy.Publisher('path', Path, queue_size=10)
+    # posisi_pub = rospy.Publisher('posisi', Point, queue_size=10)
     rospy.Subscriber('sensor_data', encoder, sensor_cb)
     
     while not rospy.is_shutdown():
@@ -68,5 +86,8 @@ if __name__ == '__main__':
         joints_pub.publish(joints)
         make_path()
         path_pub.publish(path)
+
+        #posisi 
+        # make_posisi()
         rate.sleep()
     

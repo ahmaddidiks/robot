@@ -1,0 +1,19 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/didik/robot/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/didik/robot/src/rosserial/rosserial_server/include/**",
+        "/home/didik/robot/src/rosserial/rosserial_test/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS"
+    }
+  ],
+  "version": 4
+}

@@ -5,6 +5,7 @@
   <node name="sensor_data_publisher" pkg="scara_like" type="sensor_data_publisher.py" output="screen"/>
   <node name="angle_target" pkg="scara_like" type="angle_target.py" output="screen"/>
   <node name="trajectory_plan" pkg="scara_like" type="traj_plan.py" output="screen"/>
+  <!-- <node name="data_saver" pkg="scara_like" type="save_data_node.py" output="screen"/> -->
   <include file="$(find scara8)/launch/display.launch" />
   
 </launch>

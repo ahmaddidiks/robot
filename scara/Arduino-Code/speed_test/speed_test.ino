@@ -17,6 +17,7 @@ const int STEP[stepper_num] = {23, 21, 18, 26};
 const int DIR[stepper_num]  = {22, 19, 5, 14};
 
 #define EN 25
+#define KP 10
 
 float _velSet[stepper_num];
 long _pulseCount[stepper_num];
@@ -95,10 +96,17 @@ long getDelayDuration(float degPerSec, int id) {
 }
 
 void stepperControl(int id) {
+  float speed;
+  if (abs(tetha_pos[id] - tetha[id]) > 0.3) {
+    if (abs(tetha_pos[id] - tetha[id]) < 5) {
+      speed = KP * abs(tetha_pos[id] - tetha[id]);
+      if (speed > vel[id]) speed = vel[id];
+    }
+    else speed = vel[id];
 
-  if (abs(tetha_pos[id] - tetha[id]) > 0.5) {
-    if (tetha_pos[id] < tetha[id]) _velSet[id] = vel[id];
-    else if (tetha_pos[id] > tetha[id]) _velSet[id] = -vel[id];
+    if (tetha_pos[id] < tetha[id]) _velSet[id] = speed;//vel[id];
+    else if (tetha_pos[id] > tetha[id]) _velSet[id] = -speed;//-vel[id];
+
   }
   //  else if(0.5 < abs(tetha_pos[id] - tetha[id]) < 3){
   //    if (tetha_pos[id] < tetha[id]) _velSet[id] = 10;
@@ -123,4 +131,4 @@ void stepperControl(int id) {
     _stepperState[id] = !_stepperState[id];
     _stepperLastT[id] = micros();
   }
-} 
+}

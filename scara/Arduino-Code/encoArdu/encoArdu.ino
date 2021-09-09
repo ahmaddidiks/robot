@@ -19,7 +19,14 @@ void setup() {
   encoder1.attachFullQuad(25, 14);
   encoder2.attachFullQuad(32, 33);
   encoder3.attachFullQuad(5, 18);
-  setEncoder(0);
+
+  encoder0.setCount(0);
+  encoder1.setCount(0);
+  encoder2.setCount(0);
+  encoder3.setCount(0);
+  
+  //encoder2.setCount(6400);  //135.34506225585938 / 360 * (1220/200 * 2400) = 6400,000134605
+  //encoder3.setCount(-3328); //-109.4136962890625 / 360 * ( 730/200 * 2400) = 3327,999928792
 
   nh.initNode();
   nh.advertise(pub_enc);
@@ -36,15 +43,8 @@ void loop() {
 }
 
 void get_counter() {
-  encoder.deg[0] = (float) - encoder0.getCount() * 360 / (2400 * 720 / 200); //counter * 360 deg / (ppr encoder * ppr geared/ppr stepper)
-  encoder.deg[1] = (float) encoder1.getCount() * 360 / (2400 * 7000 / 200);
-  encoder.deg[2] = (float) - encoder3.getCount() * 360 / (2400 * 730 / 200);
-  encoder.deg[3] = (float) -encoder2.getCount() * 360 / (2400 * 1220 / 200);
-}
-
-void setEncoder(int value) {
-  encoder0.setCount(value);
-  encoder1.setCount(value);
-  encoder2.setCount(value);
-  encoder3.setCount(value);
+  encoder.deg[0] = (float) -encoder0.getCount() * 360 /  10800; //((720/200) * (20/16) * 2400); //counter * 360 deg * (gear step/gear enc) / (ppr encoder * ppr geared/ppr stepper)
+  encoder.deg[1] = (float) encoder1.getCount() * 360 / 105000; //((7000/200) * (20/16) * 2400)) * 360; //7000
+  encoder.deg[2] = (float) -encoder3.getCount() * 360 / 10950;  // ((730/200) * (20/16) * 2400)) * 360;
+  encoder.deg[3] = (float) -encoder2.getCount() * 360 * (90 / 144.4) / 10610; // ((2122 / 600) * (20/16) * 2400)) * 360; //2112 / 660 = 64/20 * 63/ .....
 }

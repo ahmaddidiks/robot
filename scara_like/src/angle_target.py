@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from os import write
 import rospy
 from scara_like.msg import target, encoder
 from std_msgs.msg import Float32MultiArray, Empty, Int32
@@ -15,6 +14,7 @@ present = Point()
 start = False
 finish = False
 pos = [0,0,0,0]
+aktual_tetha = [0,0,0,0]
 
 def target_cb(data):
     global benda, meja, start
@@ -24,8 +24,9 @@ def target_cb(data):
     start = True
 
 def angle_cb(data):
-    global present, pos
-    pos = list(data.deg)
+    global pos, present, aktual_tetha
+    pos = list(data.deg).copy()
+    aktual_tetha = pos.copy()
     present.x, present.y, present.z = forward_kinematics(pos)
 
 def forward_kinematics(data):
@@ -78,16 +79,17 @@ def ik(x,y,z):
 
 def csv_save(iter):
     data = [iter]
-    
-    target_tetha = list(angle_target.data)
-    aktual_tetha = pos
+    target_tetha = list(angle_target.data).copy()
+
     for i in range(len(aktual_tetha)):
         aktual_tetha[i] = round(aktual_tetha[i], 4)
         target_tetha[i] = round(target_tetha[i], 4)
 
+    # target_posisi = [benda.x, benda.y, benda.z]
     target_posisi = [benda.x, benda.y, benda.z]
     aktual_posisi = [present.x, present.y, present.z*1000]
     for i in range(len(aktual_posisi)):
+        
         target_posisi[i] = round(target_posisi[i], 4)
         aktual_posisi[i] = round(aktual_posisi[i], 4)
 
@@ -107,39 +109,52 @@ if __name__ == "__main__":
 
     gripper = Int32()
 
-    rate = rospy.Rate(20)
+    rate = rospy.Rate(2)
 
     '''save data'''
-    f = open('/home/didik/robot/src/scara_like/data_percobaan/ik_test.csv', 'w')
-    writer = csv.writer(f)
-    header = ['percobaan', 'target tetha 1', 'target tetha 2', 'target tetha 3', 'target tetha 4',\
-                            'aktual tetha 1', 'aktual tetha 2', 'aktual tetha 3', 'aktual tetha 4',\
-                            'target pos x', 'target pos y', 'target pos z',\
-                            'aktual pos x', 'aktual pos y', 'aktual pos z']
-    writer.writerow(header)
-    percobaan = 0
-
+    # f = open('/home/didik/robot/src/scara_like/data_percobaan/data_ik_test.csv', 'w')
+    # writer = csv.writer(f)
+    # header = ['percobaan', 'target tetha 1', 'target tetha 2', 'target tetha 3', 'target tetha 4',\
+    #                         'aktual tetha 1', 'aktual tetha 2', 'aktual tetha 3', 'aktual tetha 4',\
+    #                         'target pos x', 'target pos y', 'target pos z',\
+    #                         'aktual pos x', 'aktual pos y', 'aktual pos z', 'waktu']
+    # writer.writerow(header)
+    # percobaan = 0
+    last = 0
     while not rospy.is_shutdown():
         if start:
-            rospy.loginfo('mulai')
+            # rospy.loginfo('mulai')
             angle_target = Float32MultiArray()
-
-            angle_target.data = ik(present.x, present.y, benda.z)
+            # for i in range(245, 370, 5):
+                
+            #     percobaan += 1
+            #     # rospy.loginfo('menuju sub 1 benda')
+            # angle_target.data = ik(benda.x, benda.y, benda.z)
+            # # last = rospy.get_time()
+            # angle_target_pub.publish(angle_target)
+            # wait_finish()
+                # print(rospy.get_time() - last)
+                
+                # csv_save(percobaan)
+                # benda.z += 5
+            angle_target.data = ik(present.x, present.y, benda.z+15)
             angle_target_pub.publish(angle_target)
             wait_finish()
-            csv_save(percobaan)
+            rospy.loginfo(present)
 
             rospy.loginfo('menuju sub 1 benda')
             angle_target.data = ik(benda.x, benda.y, benda.z+15)
             angle_target_pub.publish(angle_target)
             wait_finish()
-            csv_save(percobaan)
+            rospy.loginfo(present)
+            # csv_save(percobaan)
 
             rospy.loginfo('menuju benda')
             angle_target.data = ik(benda.x, benda.y, benda.z)
             angle_target_pub.publish(angle_target)
             wait_finish()
-            csv_save(percobaan)
+            rospy.loginfo(present)
+            # csv_save(percobaan)
 
             rospy.loginfo('gripper on')
             gripper.data = 20
@@ -147,22 +162,25 @@ if __name__ == "__main__":
             rospy.sleep(0.02)
 
             rospy.loginfo('menuju sub meja 1')
-            angle_target.data = ik(benda.x, benda.y, benda.z+90)
+            angle_target.data = ik(benda.x, benda.y, benda.z+80)
             angle_target_pub.publish(angle_target)
             wait_finish()
-            csv_save(percobaan)
+            rospy.loginfo(present)
+            # csv_save(percobaan)
 
             rospy.loginfo('menuju sub meja 2')
             angle_target.data = ik(meja.x, meja.y, meja.z+80)
             angle_target_pub.publish(angle_target)
             wait_finish()
-            csv_save(percobaan)
+            rospy.loginfo(present)
+            # csv_save(percobaan)
 
             rospy.loginfo('menuju meja')
             angle_target.data = ik(meja.x, meja.y, meja.z)
             angle_target_pub.publish(angle_target)
             wait_finish()
-            csv_save(percobaan)
+            rospy.loginfo(present)
+            # csv_save(percobaan)
 
             rospy.loginfo('gripper off')
             # grip off
@@ -177,13 +195,16 @@ if __name__ == "__main__":
             angle_target.data = ik(meja.x, meja.y, meja.z+80)
             angle_target_pub.publish(angle_target)
             wait_finish()
-            csv_save(percobaan)
+            rospy.loginfo(present)
+            # csv_save(percobaan)
 
-            angle_target.data = ik(0, 220, 0)
+            angle_target.data = ik(0, 270, 0)
             angle_target_pub.publish(angle_target)
             wait_finish()
-            csv_save(percobaan)
-            
+            rospy.loginfo(present)
+            # csv_save(percobaan)
             start = False
+            # percobaan +=1
+
         
         rate.sleep()

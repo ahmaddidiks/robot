@@ -1,4 +1,4 @@
-link 1 = 18 <> 73 ### encoder 18 <> 15 
+link 1 = 18 <> 73 ### encoder 18 <> 15
 link 2 = 18 <> 64 ===> 33 <> 63 ### encoder 18 <> 15
 
 tetha 1 (base)  ==> 72/20 * 200 = 720 PPR

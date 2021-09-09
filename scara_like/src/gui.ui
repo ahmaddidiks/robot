@@ -63,7 +63,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>-90</string>
+     <string>-198</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="y_benda">
@@ -76,7 +76,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>-250</string>
+     <string>279</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="z_benda">
@@ -89,7 +89,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>76</string>
     </property>
    </widget>
    <widget class="QPushButton" name="run">
@@ -141,7 +141,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>300</string>
+     <string>245</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="z_meja">
@@ -154,7 +154,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>80</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_6">
@@ -180,7 +180,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>236</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_7">

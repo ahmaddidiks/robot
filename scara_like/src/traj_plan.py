@@ -2,7 +2,6 @@
 
 import rospy, time
 from math import log, exp
-from sensor_msgs.msg import JointState
 from scara_like.msg import encoder, stepper
 from std_msgs.msg import Float32MultiArray, Empty
 
@@ -16,9 +15,12 @@ angle_start = list()
 angle_target = list()
 time_start = int()
 
+
 def sensor_data_handler(data):
     global data_sensor
     data_sensor = data.deg
+    sensor_speed = list(data.deg).copy()
+
     # print(data_sensor)
 
 def traj_cb(data):
@@ -71,17 +73,19 @@ if __name__ == "__main__":
     data = stepper()
 
     rate = rospy.Rate(60)
+
     while not rospy.is_shutdown():
         if angle_target != None:
             t = time.time() - time_start
             xt = calculate_xt(t)
             
             data.position = xt
+
             data.speed = v_max
             data.enable = True
-            data_pub.publish(data)          
+            data_pub.publish(data)
 
-                       #error
+               #error
             if all(i <= error for i in list_diff(angle_target, data_sensor)):
                 angle_target = None
                 finish_pub.publish()

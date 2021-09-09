@@ -52,8 +52,11 @@ add_message_files(
   FILES
   target.msg
   stepper.msg
-  sensor_data.msg
   encoder.msg
+  posisi.msg
+  speed.msg
+  acc.msg
+  compare.msg
 )
 
 ## Generate services in the 'srv' folder
