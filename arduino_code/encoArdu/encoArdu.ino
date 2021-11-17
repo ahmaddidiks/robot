@@ -43,8 +43,8 @@ void loop() {
 }
 
 void get_counter() {
-  encoder.deg[0] = (float) -encoder0.getCount() * 360 /  10800; //((720/200) * (20/16) * 2400); //counter * 360 deg * (gear step/gear enc) / (ppr encoder * ppr geared/ppr stepper)
-  encoder.deg[1] = (float) encoder1.getCount() * 360 / 105000; //((7000/200) * (20/16) * 2400)) * 360; //7000
-  encoder.deg[2] = (float) -encoder3.getCount() * 360 / 10950;  // ((730/200) * (20/16) * 2400)) * 360;
-  encoder.deg[3] = (float) -encoder2.getCount() * 360 * (90 / 144.4) / 10610; // ((2122 / 600) * (20/16) * 2400)) * 360; //2112 / 660 = 64/20 * 63/ .....
+  encoder.deg[0] = (float) -encoder0.getCount() * 360 /  8640; //((720/200) * 2400); //counter * 360 deg * (gear step/gear enc) / (ppr encoder * ppr geared/ppr stepper)
+  encoder.deg[1] = (float) encoder1.getCount() * 360 / 84000; //((7000/200) * 2400)); //7000
+  encoder.deg[2] = (float) -encoder3.getCount() * 360 / 8760;  // ((730/200) * 2400));
+  encoder.deg[3] = (float) -encoder2.getCount() * 360 * 14640; // ((1220 / 200)  * 2400)) * 360; //2112 / 660 = 64/20 * 63/ .....
 }
